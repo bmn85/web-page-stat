@@ -5,7 +5,6 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
 
 import static org.junit.Assert.*;
@@ -34,10 +33,10 @@ public class WebPageTest {
 		assertTrue(page.urlsCount() == 5);
 
 		assertTrue(page.exteranlUrls().count() == 3);
-		assertTrue(page.interanlUrls().count() == 2);
+		assertTrue(page.internalUrls().count() == 2);
 
 		assertTrue(page.exteranlUrls().hostNames().size() == 2);
-		assertTrue(page.interanlUrls().hostNames().size() == 1);
+		assertTrue(page.internalUrls().hostNames().size() == 1);
 	}
 
 }
