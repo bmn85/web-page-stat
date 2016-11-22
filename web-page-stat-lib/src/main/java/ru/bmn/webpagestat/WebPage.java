@@ -20,6 +20,7 @@ public class WebPage {
 	private UrlPack exteranl;
 	private List<String> badUrls = null;
 	private boolean isFetched = false;
+	private static final Pattern REGEX_LINK_PATTERN = Pattern.compile("<a\\s[^>]*?href=['\"]?(.*?)['\"]?.*?>");
 
 	public WebPage(String url) {
 		try {
@@ -49,11 +50,16 @@ public class WebPage {
 	private void fetch() {
 		if (!this.isFetched) {
 			try {
-				URLConnection con = url.openConnection();
+				URLConnection con = this.url.openConnection();
 				BufferedReader urlContent = new BufferedReader(
 					new InputStreamReader(con.getInputStream())
 				);
 				String line;
+
+				this.internal = new UrlPack();
+				this.exteranl = new UrlPack();
+				this.badUrls  = new LinkedList<>();
+
 				while ((line = urlContent.readLine()) != null) {
 					this.processHtmlLine(line);
 				}
@@ -69,22 +75,17 @@ public class WebPage {
 	}
 
 	private void processHtmlLine(String line) {
-		Pattern p = Pattern.compile("<a\\s[^>]*?href=['\"]?(.*?)['\"]?.*?>");
-		Matcher m = p.matcher(line);
+		Matcher m = REGEX_LINK_PATTERN.matcher(line);
 
 		while (m.find()) {
 			String url = m.group(1);
 			try {
 				URL urlInfo = new URL(url);
-				String host = urlInfo.getHost();
 				if (urlInfo.getHost() == this.url.getHost()) {
 					this.internal.add(urlInfo);
 				}
 			}
 			catch (MalformedURLException e) {
-				if (this.badUrls == null) {
-					this.badUrls = new LinkedList<String>();
-				}
 				this.badUrls.add(url);
 			}
 		}
