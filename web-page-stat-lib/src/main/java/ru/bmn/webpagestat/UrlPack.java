@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  *
  */
-public class UrlPack {
+public final class UrlPack {
 	private Map<String, Set<String>> urlByHost = null;
 
 	public void add(URL url) {
